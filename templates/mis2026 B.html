@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>馬崇恩簡介</title>
+	<style type="text/css">
+		* { font-family:"標楷體"; margin-left:auto; margin-right:auto;}
+		h1 {color:blue; font-size:60px;}
+		h2 {color:#33ff33; font-size:40px;}
+	</style>
+<script>
+		function change1() {
+  			document.getElementById("pic").src = "/static/mountain.jpg";
+  			document.getElementById("h2text").innerText = "靜宜資管";
+		}
+
+		function change2() {
+  			document.getElementById("pic").src = "/static/cliff.jpg";
+  			document.getElementById("h2text").innerText = "Chong-en MA";
+		}
+	</script>
+
+</head>
+<body>
+	<?php echo date("Y-m-d") ?>
+	<table width="70%">
+		<tr>
+			<td>
+				<img src="/static/cliff.jpg" width="110%"id="pic" onmouseover="change1()" onmouseout="change2()"></img>
+			</td>
+
+			<td>
+				<h1>馬崇恩</h1>
+<h2 id="h2text">Chong-en MA</h2>
+			</td>
+		</tr>
+	</table>
+	<table width="70%" border="1">
+		<tr>
+			<td>
+				IG：<a href="https://www.instagram.com/chong_en_0621/">https://www.instagram.com/chong_en_0621/</a><br>
+
+Tel:<a href="tel:0906515939">0906-515939</a><br>
+
+E-Mail:<a href="mailto:machongen@gmail.com">machongen@gmail.com</a><br>
+<br>
+			</td>
+
+			<td>
+				大象席地而坐電影配樂<br>
+				<audio controls>
+					<source src="/static/elephant.mp3" type="audio/mP3">
+				</audio><br>
+			</td>
+
+			<td>
+				不要去臺灣<br>
+				<iframe src="/static/https://www.youtube.com/embed/pW88QFpHXa8" allowfullscreen></iframe>
+			</td>
+		</tr>
+	</table>		
+
+
+</body>
+</html>
