@@ -41,5 +41,4 @@ def account():
 
 
 if __name__ == "__main__":
-    #app.run(run)
-    serve(app, host='0.0.0.0', port=8080)
+    app.run(run)
