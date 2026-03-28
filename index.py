@@ -1,6 +1,6 @@
+import math
 from flask import Flask, render_template,request
 from datetime import datetime
-import math
 app = Flask(__name__)
 
 @app.route("/")
@@ -42,26 +42,24 @@ def account():
 def math_calc():
     if request.method == "POST":
         try:
-            x = float(request.form["x"])
-            y = float(request.form["y"])
-            opt = request.form["opt"]
+            # 1. 抓取資料
+            num_x = float(request.form.get("x"))
+            num_y = float(request.form.get("y"))
+            opt = request.form.get("opt")
             
+            # 2. 判斷邏輯
             if opt == "pow":
-                res = math.pow(x, y)
-                result = f"{x} 的 {y} 次方為：{res}"
+                res = num_x ** num_y
+                return f"計算結果：{num_x} 的 {num_y} 次方 = {res}"
             elif opt == "root":
-                # 根號即為 x 的 (1/y) 次方
-                res = math.pow(x, 1/y)
-                result = f"{x} 的 {y} 次方根為：{res}"
-            else:
-                result = "未知運算"
-        except Exception as e:
-            result = "輸入錯誤，請確保輸入的是數字。"
+                res = num_x ** (1/num_y)
+                return f"計算結果：{num_x} 的 {num_y} 次根號 = {res}"
             
-        return result
-    else:
-        return render_template("math.html")
-
+        except Exception as e:
+            return f"發生錯誤：{e} (請檢查是否輸入正確數字)"
+            
+    # GET 請求時顯示網頁
+    return render_template("math.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
