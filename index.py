@@ -12,29 +12,7 @@ def index():
     link += "<a href=/me>關於我</a><hr>"
     link += "<a href=/math>次方與根號計算</a><hr>" 
     return link
-@app.route("/math", methods=["GET", "POST"])
-def math_calc():
-    if request.method == "POST":
-        try:
-            x = float(request.form["x"])
-            y = float(request.form["y"])
-            opt = request.form["opt"]
-            
-            if opt == "pow":
-                res = math.pow(x, y)
-                result = f"{x} 的 {y} 次方為：{res}"
-            elif opt == "root":
-                # 根號即為 x 的 (1/y) 次方
-                res = math.pow(x, 1/y)
-                result = f"{x} 的 {y} 次方根為：{res}"
-            else:
-                result = "未知運算"
-        except Exception as e:
-            result = "輸入錯誤，請確保輸入的是數字。"
-            
-        return result
-    else:
-        return render_template("math.html")
+
 @app.route("/mis")
 def course():
     return "<h1>資訊管理導論</h1>"
@@ -60,6 +38,29 @@ def account():
         return result
     else:
         return render_template("account.html")
+@app.route("/math", methods=["GET", "POST"])
+def math_calc():
+    if request.method == "POST":
+        try:
+            x = float(request.form["x"])
+            y = float(request.form["y"])
+            opt = request.form["opt"]
+            
+            if opt == "pow":
+                res = math.pow(x, y)
+                result = f"{x} 的 {y} 次方為：{res}"
+            elif opt == "root":
+                # 根號即為 x 的 (1/y) 次方
+                res = math.pow(x, 1/y)
+                result = f"{x} 的 {y} 次方根為：{res}"
+            else:
+                result = "未知運算"
+        except Exception as e:
+            result = "輸入錯誤，請確保輸入的是數字。"
+            
+        return result
+    else:
+        return render_template("math.html")
 
 
 if __name__ == "__main__":
