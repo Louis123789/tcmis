@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request
 from datetime import datetime
 
@@ -19,11 +18,12 @@ else:
 
 firebase_admin.initialize_app(cred)
 
+
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    link = "<h1>歡迎進入馬崇恩的網站20260409</h1>"
+   link = "<h1>歡迎進入馬崇恩的網站20260409</h1>"
     link += "<a href=/mis>課程</a><hr>"
     link += "<a href=/today>現在日期時間</a><hr>"
     link += "<a href=/me>關於我</a><hr>"
@@ -36,10 +36,10 @@ def index():
 def read():
     Result = ""
     db = firestore.client()
-    collection_ref = db.collection("靜宜資管") 
+    collection_ref = db.collection("靜宜資管")
     docs = collection_ref.order_by("lab",direction=firestore.Query.DESCENDING).get()
     for doc in docs:        
-    Result += str(doc.to_dict()) + "<br>"    
+        Result += str(doc.to_dict()) + "<br>"    
     return Result
 
 @app.route("/mis")
@@ -78,7 +78,7 @@ def calculate():
         x = float(request.form.get("x"))
         opt = request.form.get("opt")
         y = float(request.form.get("y"))
-        
+       
         if opt == "次方":
             res = x ** y
             result_str = f"{x} 的 {y} 次方 = {res}"
@@ -90,14 +90,14 @@ def calculate():
                 result_str = f"{x} 的 {y} 次方根 = {res}"
         else:
             result_str = "無效的運算"
-            
+           
         return f"<h1>計算結果</h1><p>{result_str}</p><a href='/calculate'>重新計算</a>"
 
     html_form = """
     <h1>次方與根號計算</h1>
     <form method="post">
         x: <input type="number" step="any" name="x" required><br>
-        運算: 
+        運算:
         <select name="opt">
             <option value="次方">次方</option>
             <option value="根號">根號</option>
