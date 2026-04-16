@@ -32,6 +32,37 @@ def index():
     link += "<a href=/read>讀取Firestore資料</a><br>"
     return link
 
+@app.route("/read2", methods=["GET", "POST"])
+def read2():
+    Result = "請輸入關鍵字<br>"
+    Result += """
+    <form method="POST" action="/read2">
+        <input type="text" name="keyword">
+        <input type="submit" value="查詢">
+    </form><br>
+    """
+   
+    keyword = request.form.get("keyword")
+    db = firestore.client()
+    collection_ref = db.collection("靜宜資管")
+    docs = collection_ref.order_by("lab", direction=firestore.Query.DESCENDING).get()
+   
+    found = False
+   
+    if keyword:
+        for doc in docs:
+            teacher = doc.to_dict()
+            if keyword in teacher["name"]:
+                Result += str(teacher) + "<br>"
+                found = True
+       
+        if not found:
+            Result += "抱歉，查無此關鍵字相關之老師資料"
+
+    Result += '<br><a href="/">返回首頁</a>'
+           
+    return Result
+
 @app.route("/read")
 def read():
     Result = ""
