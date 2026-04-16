@@ -33,8 +33,8 @@ def index():
     link += "<a href=/welcome?u=崇恩&d=靜宜資管&c=資訊管理導論>Get傳值</a><hr>"
     link += "<a href=/calculate>次方與根號計算</a><hr>"
     link += "<a href=/read>讀取Firestore資料</a><br>"
-    link += "<a href=/read>讀取Firestore資料(根據姓名關鍵字)</a><br>"
-    link += "<a href=/read>爬取子青老師本學期課程</a><br>"
+    link += "<a href=/read2>讀取Firestore資料(根據姓名關鍵字)</a><br>"
+    link += "<a href=/spider1>爬取子青老師本學期課程</a><br>"
     return link
 
 @app.route("/spider1")
