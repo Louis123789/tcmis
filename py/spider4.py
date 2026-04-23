@@ -6,7 +6,5 @@ Data = requests.get(url)
 Data.encoding = "utf-8"
 #print(Data.text)
 sp = BeautifulSoup(Data.text, "html.parser")
-result=sp.select("td")
-for item in result:
-	print(item)
-	print()
+result=sp.find(id= "h2text")
+print(item.get("src"))
