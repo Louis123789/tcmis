@@ -35,7 +35,49 @@ def index():
     link += "<a href=/read>讀取Firestore資料</a><br>"
     link += "<a href=/read2>讀取Firestore資料(根據姓名關鍵字)</a><br>"
     link += "<a href=/spider1>爬取子青老師本學期課程</a><br>"
+    link += "<a href=/movie1>爬取即將上映電影</a><br>"
     return link
+
+@app.route("/movie1", methods=["GET", "POST"])
+def movie1():
+    # 建立搜尋表單
+    R = """
+    <form method="POST" action="/movie1">
+        <p>請輸入電影關鍵字：<input type="text" name="keyword"></p>
+        <button type="submit">開始搜尋</button>
+    </form>
+    <hr>
+    """
+   
+    # 爬取資料
+    url = "http://www.atmovies.com.tw/movie/next/"
+    Data = requests.get(url)
+    Data.encoding = "utf-8"
+    sp = BeautifulSoup(Data.text, "html.parser")
+    result = sp.select(".filmListAllX li")
+
+    # 取得使用者輸入的關鍵字 (如果是 GET 請求，則為 None)
+    keyword = request.form.get("keyword") if request.method == "POST" else ""
+
+    for item in result:
+        try:
+            img_tag = item.find("img")
+            name = img_tag.get("alt") # 電影名稱
+           
+            # 判斷邏輯：如果有輸入關鍵字，就過濾；沒輸入就顯示全部
+            if not keyword or keyword in name:
+                # 取得介紹頁連結
+                link = "https://www.atmovies.com.tw" + item.find("a").get("href")
+                # 取得海報圖片網址
+                img_url = "https://www.atmovies.com.tw" + img_tag.get("src")
+               
+                # 組合 HTML：<a> 是連結，<img> 是圖片
+                R += f'<h3><a href="{link}" target="_blank">{name}</a></h3>'
+                R += f'<img src="{img_url}" width="200"><br><hr>'
+        except:
+            continue
+           
+    return R
 
 @app.route("/spider1")
 def spider1():
