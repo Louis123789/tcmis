@@ -35,8 +35,90 @@ def index():
     link += "<a href=/read>讀取Firestore資料</a><br>"
     link += "<a href=/read2>讀取Firestore資料(根據姓名關鍵字)</a><br>"
     link += "<a href=/spider1>爬取子青老師本學期課程</a><br>"
-    link += "<a href=/movie1>爬取即將上映電影</a><br>"
+    link += "<a href=/spiderMovie>查看日期以及查詢即將上映電影</a><br>"
+    link += "<a href=/searchMovie>透過資料庫搜尋即將上映電影</a><br>"
     return link
+
+
+@app.route("/spiderMovie")
+def spiderMovie():
+    R = ""
+    db = firestore.client()
+    url = "http://www.atmovies.com.tw/movie/next/"
+    Data = requests.get(url)
+    Data.encoding = "utf-8"
+
+    sp = BeautifulSoup(Data.text, "html.parser")
+    # 取得更新日期
+    lastUpdate = sp.find(class_="smaller09").text.replace("更新時間：", "")
+
+    result = sp.select(".filmListAllX li")
+    total = 0  # 初始化計數器
+    
+    for item in result:
+        try:
+            movie_id = item.find("a").get("href").replace("/movie/", "").replace("/", "")
+            title = item.find(class_="filmtitle").text
+            picture = "https://www.atmovies.com.tw" + item.find("img").get("src")
+            hyperlink = "https://www.atmovies.com.tw" + item.find("a").get("href")
+            showDate = item.find(class_="runtime").text[5:15]
+
+            doc = {
+                "title": title,
+                "picture": picture,
+                "hyperlink": hyperlink,
+                "showDate": showDate,
+                "lastUpdate": lastUpdate,
+            }
+
+            # 存入 Firestore
+            doc_ref = db.collection("電影2B").document(movie_id)
+            doc_ref.set(doc)
+            total += 1  # 每成功存入一筆就加 1
+        except:
+            continue
+
+    R += f"網站最近更新日期：{lastUpdate}<br>"
+    R += f"總共爬取 {total} 部電影到資料庫"
+    return R
+
+@app.route("/searchMovie", methods=["GET", "POST"])
+def searchMovie():
+    # 建立搜尋表單
+    R = """
+    <h1>電影資料庫查詢</h1>
+    <form method="POST" action="/searchMovie">
+        <p>請輸入電影關鍵字：<input type="text" name="keyword"></p>
+        <button type="submit">開始搜尋</button>
+    </form>
+    <hr>
+    """
+   
+    if request.method == "POST":
+        keyword = request.form.get("keyword")
+        db = firestore.client()
+        # 從「電影2B」集合抓取所有資料
+        collection_ref = db.collection("電影2B")
+        docs = collection_ref.get()
+        
+        count = 1
+        for doc in docs:
+            movie = doc.to_dict()
+            # 判斷關鍵字是否在片名中
+            if keyword in movie["title"]:
+                R += f"<b>編號：</b>{count}<br>"
+                R += f"<b>片名：</b>{movie['title']}<br>"
+                R += f"<b>上映日期：</b>{movie['showDate']}<br>"
+                R += f'<a href="{movie["hyperlink"]}" target="_blank">'
+                R += f'<img src="{movie["picture"]}" width="200"></a><br>'
+                R += f'<a href="{movie["hyperlink"]}">介紹頁面</a><hr>'
+                count += 1
+        
+        if count == 1:
+            R += "查無相關電影資料。"
+           
+    return R
+
 
 @app.route("/movie1", methods=["GET", "POST"])
 def movie1():
